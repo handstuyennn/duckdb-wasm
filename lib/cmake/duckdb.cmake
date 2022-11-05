@@ -10,6 +10,8 @@ endif()
 set(DUCKDB_CXX_FLAGS "${DUCKDB_CXX_FLAGS} -Wno-unqualified-std-cast-call")
 message("DUCKDB_CXX_FLAGS=${DUCKDB_CXX_FLAGS}")
 
+set(GEO_SOURCE_DIR "${CMAKE_SOURCE_DIR}/../submodules/geo")
+
 ExternalProject_Add(
   duckdb_ep
   SOURCE_DIR "${CMAKE_SOURCE_DIR}/../submodules/duckdb"
@@ -24,6 +26,7 @@ ExternalProject_Add(
              -DCMAKE_MODULE_PATH=${CMAKE_MODULE_PATH}
              -DCMAKE_BUILD_TYPE=${DUCKDB_BUILD_TYPE}
              -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
+             -DEXTERNAL_EXTENSION_DIRECTORIES=${GEO_SOURCE_DIR}/geo
              -DBUILD_PARQUET_EXTENSION=TRUE
              -DBUILD_FTS_EXTENSION=TRUE
              -DBUILD_EXCEL_EXTENSION=TRUE
@@ -38,13 +41,15 @@ ExternalProject_Add(
     <INSTALL_DIR>/lib/libduckdb_hyperloglog.a
     <INSTALL_DIR>/lib/libduckdb_miniz.a
     <INSTALL_DIR>/lib/libduckdb_mbedtls.a
+    <INSTALL_DIR>/lib/libduckdb_fsst.a
     <INSTALL_DIR>/lib/libduckdb_pg_query.a
     <INSTALL_DIR>/lib/libduckdb_utf8proc.a
     <INSTALL_DIR>/lib/libduckdb_fastpforlib.a
     <INSTALL_DIR>/lib/libparquet_extension.a
     <INSTALL_DIR>/lib/libfts_extension.a
     <INSTALL_DIR>/lib/libexcel_extension.a
-    <INSTALL_DIR>/lib/libjson_extension.a)
+    <INSTALL_DIR>/lib/libjson_extension.a
+    <INSTALL_DIR>/lib/libgeo_extension.a)
 
 ExternalProject_Get_Property(duckdb_ep install_dir)
 ExternalProject_Get_Property(duckdb_ep binary_dir)
@@ -67,6 +72,7 @@ target_link_libraries(
   INTERFACE ${install_dir}/lib/libduckdb_hyperloglog.a
   INTERFACE ${install_dir}/lib/libduckdb_miniz.a
   INTERFACE ${install_dir}/lib/libduckdb_mbedtls.a
+  INTERFACE ${install_dir}/lib/libduckdb_fsst.a
   INTERFACE ${install_dir}/lib/libduckdb_pg_query.a
   INTERFACE ${install_dir}/lib/libduckdb_utf8proc.a
   INTERFACE ${install_dir}/lib/libduckdb_fastpforlib.a
@@ -99,8 +105,14 @@ add_library(duckdb_json STATIC IMPORTED)
 set_property(TARGET duckdb_json PROPERTY IMPORTED_LOCATION ${install_dir}/lib/libjson_extension.a)
 target_include_directories(duckdb_json INTERFACE ${DUCKDB_SOURCE_DIR}/extension/json/include)
 
+add_library(duckdb_geo STATIC IMPORTED)
+set_property(TARGET duckdb_geo PROPERTY IMPORTED_LOCATION ${install_dir}/lib/libgeo_extension.a)
+target_include_directories(duckdb_geo INTERFACE ${GEO_SOURCE_DIR}/geo/include)
+target_include_directories(duckdb_geo INTERFACE ${GEO_SOURCE_DIR}/geo/third_party/json/include)
+
 add_dependencies(duckdb duckdb_ep)
 add_dependencies(duckdb_fts duckdb_ep)
 add_dependencies(duckdb_parquet duckdb_ep)
 add_dependencies(duckdb_excel duckdb_ep)
 add_dependencies(duckdb_json duckdb_ep)
+add_dependencies(duckdb_geo duckdb_ep)

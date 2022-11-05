@@ -32,6 +32,7 @@ JS_FILTER=
 EXTENSION_CACHE_DIR="${ROOT_DIR}/.ccache/extension"
 EXCEL_EXTENSION_CACHE_FILE="${EXTENSION_CACHE_DIR}/excel"
 JSON_EXTENSION_CACHE_FILE="${EXTENSION_CACHE_DIR}/json"
+GEO_EXTENSION_CACHE_FILE="${EXTENSION_CACHE_DIR}/geo"
 
 # ---------------------------------------------------------------------------
 # Formatting
@@ -246,6 +247,9 @@ ifeq (${DUCKDB_EXCEL}, 1)
 endif
 ifeq (${DUCKDB_JSON}, 1)
 	touch ${JSON_EXTENSION_CACHE_FILE}
+endif
+ifeq (${DUCKDB_GEO}, 1)
+	touch ${GEO_EXTENSION_CACHE_FILE}
 endif
 
 .PHONY: wasm

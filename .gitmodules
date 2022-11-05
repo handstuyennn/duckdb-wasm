@@ -32,3 +32,6 @@
 	url = https://github.com/gregrahn/tpch-kit.git
 	ignore = dirty
 	shallow = true
+[submodule "submodules/geo"]
+	path = submodules/geo
+	url = https://github.com/handstuyennn/geo
