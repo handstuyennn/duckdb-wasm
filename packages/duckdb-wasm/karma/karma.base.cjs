@@ -1,6 +1,7 @@
-const puppeteer = require('puppeteer');
-
-process.env.CHROME_BIN = puppeteer.executablePath();
+if (process.env.CHROME_BIN === 'undefined') {
+    process.env.CHROME_BIN = require('puppeteer').executablePath();
+}
+console.log(`CHROME_BIN=${process.env.CHROME_BIN}`);
 
 const JS_TIMEOUT = 900000;
 
@@ -15,12 +16,12 @@ module.exports = function (config) {
             'karma-spec-reporter',
             'karma-coverage',
             'karma-jasmine-html-reporter',
-            require('./s3rver/s3rver')
+            require('./s3rver/s3rver'),
         ],
         frameworks: ['jasmine', 's3rver'],
         s3rver: {
             port: 4923,
-            silent: true
+            silent: true,
         },
         files: [
             { pattern: 'packages/duckdb-wasm/dist/tests-browser.js' },
