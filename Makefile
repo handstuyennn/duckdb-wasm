@@ -33,6 +33,7 @@ EXTENSION_CACHE_DIR="${ROOT_DIR}/.ccache/extension"
 EXCEL_EXTENSION_CACHE_FILE="${EXTENSION_CACHE_DIR}/excel"
 JSON_EXTENSION_CACHE_FILE="${EXTENSION_CACHE_DIR}/json"
 GEO_EXTENSION_CACHE_FILE="${EXTENSION_CACHE_DIR}/geo"
+VARIANT_EXTENSION_CACHE_FILE="${EXTENSION_CACHE_DIR}/variant"
 
 # ---------------------------------------------------------------------------
 # Formatting
@@ -250,6 +251,9 @@ ifeq (${DUCKDB_JSON}, 1)
 endif
 ifeq (${DUCKDB_GEO}, 1)
 	touch ${GEO_EXTENSION_CACHE_FILE}
+endif
+ifeq (${DUCKDB_VARIANT}, 1)
+	touch ${VARIANT_EXTENSION_CACHE_FILE}
 endif
 
 .PHONY: wasm

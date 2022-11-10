@@ -50,6 +50,7 @@
 #include "duckdb/web/extensions/geo_extension.h"
 #include "duckdb/web/extensions/json_extension.h"
 #include "duckdb/web/extensions/parquet_extension.h"
+#include "duckdb/web/extensions/variant_extension.h"
 #include "duckdb/web/functions/table_function_relation.h"
 #include "duckdb/web/io/arrow_ifstream.h"
 #include "duckdb/web/io/buffered_filesystem.h"
@@ -816,8 +817,11 @@ arrow::Status WebDB::Open(std::string_view args_json) {
 #if defined(DUCKDB_JSON_EXTENSION)
         duckdb_web_json_init(db.get());
 #endif
-#if defined(DUCKDB_JSON_EXTENSION)
+#if defined(DUCKDB_GEO_EXTENSION)
         duckdb_web_geo_init(db.get());
+#endif
+#if defined(DUCKDB_VARIANT_EXTENSION)
+        duckdb_web_variant_init(db.get());
 #endif
         RegisterCustomExtensionOptions(db);
 

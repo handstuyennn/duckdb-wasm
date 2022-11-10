@@ -236,10 +236,15 @@ add_library(
   duckdb_web_geo
   ${CMAKE_SOURCE_DIR}/src/extensions/geo_extension.cc)
 
+add_library(
+  duckdb_web_variant
+  ${CMAKE_SOURCE_DIR}/src/extensions/variant_extension.cc)
+
 set(EXTENSION_CACHE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../.ccache/extension")
 set(EXCEL_EXTENSION_CACHE_FILE "${EXTENSION_CACHE_DIR}/excel")
 set(JSON_EXTENSION_CACHE_FILE "${EXTENSION_CACHE_DIR}/json")
 set(GEO_EXTENSION_CACHE_FILE "${EXTENSION_CACHE_DIR}/geo")
+set(VARIANT_EXTENSION_CACHE_FILE "${EXTENSION_CACHE_DIR}/variant")
 
 set(DUCKDB_WEB_EXCEL "")
 if(EXISTS "${EXCEL_EXTENSION_CACHE_FILE}")
@@ -256,13 +261,19 @@ if(EXISTS "${GEO_EXTENSION_CACHE_FILE}")
   set(DUCKDB_WEB_GEO "duckdb_web_geo")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDUCKDB_GEO_EXTENSION")
 endif()
+set(DUCKDB_WEB_VARIANT "")
+if(EXISTS "${VARIANT_EXTENSION_CACHE_FILE}")
+  set(DUCKDB_WEB_VARIANT "duckdb_web_variant")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDUCKDB_VARIANT_EXTENSION")
+endif()
 
-target_link_libraries(duckdb_web duckdb duckdb_web_fts duckdb_web_parquet ${DUCKDB_WEB_EXCEL} ${DUCKDB_WEB_JSON} ${DUCKDB_WEB_GEO} arrow rapidjson ${THREAD_LIBS})
+target_link_libraries(duckdb_web duckdb duckdb_web_fts duckdb_web_parquet ${DUCKDB_WEB_EXCEL} ${DUCKDB_WEB_JSON} ${DUCKDB_WEB_GEO} ${DUCKDB_WEB_VARIANT} arrow rapidjson ${THREAD_LIBS})
 target_link_libraries(duckdb_web_fts duckdb duckdb_fts)
 target_link_libraries(duckdb_web_parquet duckdb duckdb_parquet)
 target_link_libraries(duckdb_web_excel duckdb duckdb_excel)
 target_link_libraries(duckdb_web_json duckdb duckdb_json)
 target_link_libraries(duckdb_web_geo duckdb duckdb_geo)
+target_link_libraries(duckdb_web_variant duckdb duckdb_variant)
 
 # ---------------------------------------------------------------------------
 # Emscripten
@@ -362,7 +373,7 @@ if(NOT EMSCRIPTEN)
       ${CMAKE_SOURCE_DIR}/test/webdb_test.cc
       ${CMAKE_SOURCE_DIR}/test/tester.cc)
 
-    set(TEST_LIBS duckdb_web duckdb_web_fts duckdb_web_parquet ${DUCKDB_WEB_EXCEL} ${DUCKDB_WEB_JSON}  ${DUCKDB_WEB_GEO} gtest gmock gflags ${THREAD_LIBS})
+    set(TEST_LIBS duckdb_web duckdb_web_fts duckdb_web_parquet ${DUCKDB_WEB_EXCEL} ${DUCKDB_WEB_JSON} ${DUCKDB_WEB_GEO} ${DUCKDB_WEB_VARIANT} gtest gmock gflags ${THREAD_LIBS})
 
   add_executable(tester ${TEST_CC})
   target_link_libraries(tester ${TEST_LIBS})

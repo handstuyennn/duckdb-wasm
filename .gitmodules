@@ -35,3 +35,6 @@
 [submodule "submodules/geo"]
 	path = submodules/geo
 	url = https://github.com/handstuyennn/geo
+[submodule "submodules/variant"]
+	path = submodules/variant
+	url = git@github.com:handstuyennn/variant.git

@@ -11,6 +11,7 @@ set(DUCKDB_CXX_FLAGS "${DUCKDB_CXX_FLAGS} -Wno-unqualified-std-cast-call")
 message("DUCKDB_CXX_FLAGS=${DUCKDB_CXX_FLAGS}")
 
 set(GEO_SOURCE_DIR "${CMAKE_SOURCE_DIR}/../submodules/geo")
+set(VARIANT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/../submodules/variant")
 
 ExternalProject_Add(
   duckdb_ep
@@ -27,6 +28,7 @@ ExternalProject_Add(
              -DCMAKE_BUILD_TYPE=${DUCKDB_BUILD_TYPE}
              -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
              -DEXTERNAL_EXTENSION_DIRECTORIES=${GEO_SOURCE_DIR}/geo
+             -DEXTERNAL_EXTENSION_DIRECTORIES=${VARIANT_SOURCE_DIR}/variant
              -DBUILD_PARQUET_EXTENSION=TRUE
              -DBUILD_FTS_EXTENSION=TRUE
              -DBUILD_EXCEL_EXTENSION=TRUE
@@ -49,7 +51,8 @@ ExternalProject_Add(
     <INSTALL_DIR>/lib/libfts_extension.a
     <INSTALL_DIR>/lib/libexcel_extension.a
     <INSTALL_DIR>/lib/libjson_extension.a
-    <INSTALL_DIR>/lib/libgeo_extension.a)
+    <INSTALL_DIR>/lib/libgeo_extension.a
+    <INSTALL_DIR>/lib/libvariant_extension.a)
 
 ExternalProject_Get_Property(duckdb_ep install_dir)
 ExternalProject_Get_Property(duckdb_ep binary_dir)
@@ -110,9 +113,14 @@ set_property(TARGET duckdb_geo PROPERTY IMPORTED_LOCATION ${install_dir}/lib/lib
 target_include_directories(duckdb_geo INTERFACE ${GEO_SOURCE_DIR}/geo/include)
 target_include_directories(duckdb_geo INTERFACE ${GEO_SOURCE_DIR}/geo/third_party/json/include)
 
+add_library(duckdb_variant STATIC IMPORTED)
+set_property(TARGET duckdb_variant PROPERTY IMPORTED_LOCATION ${install_dir}/lib/libvariant_extension.a)
+target_include_directories(duckdb_variant INTERFACE ${VARIANT_SOURCE_DIR}/variant/include)
+
 add_dependencies(duckdb duckdb_ep)
 add_dependencies(duckdb_fts duckdb_ep)
 add_dependencies(duckdb_parquet duckdb_ep)
 add_dependencies(duckdb_excel duckdb_ep)
 add_dependencies(duckdb_json duckdb_ep)
 add_dependencies(duckdb_geo duckdb_ep)
+add_dependencies(duckdb_variant duckdb_ep)
