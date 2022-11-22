@@ -35,11 +35,13 @@ ExternalProject_Add(
              -DBUILD_JSON_EXTENSION=TRUE
              -DBUILD_SHELL=FALSE
              -DBUILD_UNITTESTS=FALSE
+             -DBUILD_JEMALLOC_EXTENSION=FALSE
              -DDISABLE_BUILTIN_EXTENSIONS=TRUE
   BUILD_BYPRODUCTS
     <INSTALL_DIR>/lib/libduckdb_re2.a
     <INSTALL_DIR>/lib/libduckdb_static.a
     <INSTALL_DIR>/lib/libduckdb_fmt.a
+    <INSTALL_DIR>/lib/libduckdb_fsst.a
     <INSTALL_DIR>/lib/libduckdb_hyperloglog.a
     <INSTALL_DIR>/lib/libduckdb_miniz.a
     <INSTALL_DIR>/lib/libduckdb_mbedtls.a
@@ -72,6 +74,7 @@ target_link_libraries(
   duckdb
   INTERFACE ${install_dir}/lib/libduckdb_re2.a
   INTERFACE ${install_dir}/lib/libduckdb_fmt.a
+  INTERFACE ${install_dir}/lib/libduckdb_fsst.a
   INTERFACE ${install_dir}/lib/libduckdb_hyperloglog.a
   INTERFACE ${install_dir}/lib/libduckdb_miniz.a
   INTERFACE ${install_dir}/lib/libduckdb_mbedtls.a
